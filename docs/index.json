@@ -1,0 +1,16 @@
+{
+"generatedAt": 0,
+"items": [
+{
+"id": "ex-1",
+"title": "개인정보 보호법 시행령 일부개정안",
+"summary": "가명정보 결합 절차 개선 및 과징금 산정 기준 명확화",
+"articles": ["제28조의2", "제64조"],
+"reason": "디지털 전환 환경에서 개인정보 활용과 보호의 균형",
+"effectiveDate": "2025-03-01",
+"announcedDate": "2024-12-01",
+"lawType": "시행령",
+"source": { "name": "국가법령정보센터", "url": "https://www.law.go.kr/" }
+}
+]
+}
