@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 
 TARGET_URLS = [
-   # 행정규칙 목록 (서버 렌더링, 데이터 확실)
+    # 행정규칙 목록 (서버 렌더링, 데이터 확실)
     "https://www.law.go.kr/LSW/admRulLsInfoP.do?admRulSeq=",
     # 자치법규 목록
     "https://www.law.go.kr/LSW/ordinInfoP.do?ordinSeq="
