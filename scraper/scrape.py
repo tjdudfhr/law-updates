@@ -1,13 +1,27 @@
-import requests, json, re, time, hashlib
-from bs4 import BeautifulSoup
+import json, re, time, hashlib, sys
 from urllib.parse import urljoin
+import requests
+from bs4 import BeautifulSoup
+from playwright.sync_api import sync_playwright
 
-# 제공해주신 목록 URL(필요시 여기 배열에 다른 목록 URL을 추가할 수 있어요)
 TARGET_URLS = [
+    # 검색어 없이 '시행 예정' 전체 목록
     "https://www.law.go.kr/LSW/lsSc.do?menuId=1&subMenuId=15&tabMenuId=81&eventGubun=060101"
 ]
 
-HEADERS = {"User-Agent": "LawUpdatesBot/1.0 (+contact@example.com)"}
+UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 Safari/537.36"
+HEADERS = {"User-Agent": UA, "Accept-Language": "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7"}
+
+def norm_date(s: str|None):
+    if not s: return None
+    s = s.replace("/", ".").replace("-", ".")
+    m = re.search(r"(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})", s)
+    if not m: return None
+    y, mm, d = map(int, m.groups())
+    return f"{y:04d}-{mm:02d}-{d:02d}"
+
+def make_id(title, url, date):
+    return hashlib.md5((title + (date or '') + url).encode('utf-8')).hexdigest()
 
 def get_html(url):
     r = requests.get(url, headers=HEADERS, timeout=30)
@@ -15,17 +29,6 @@ def get_html(url):
         r.encoding = r.apparent_encoding
     r.raise_for_status()
     return r.text
-
-def norm_date(s):
-    if not s: return None
-    s = s.replace('/', '.').replace('-', '.')
-    m = re.search(r'(\d{4})[.\-\/](\d{1,2})[.\-\/](\d{1,2})', s)
-    if not m: return None
-    y, mth, d = map(int, m.groups())
-    return f"{y:04d}-{mth:02d}-{d:02d}"
-
-def make_id(title, url, date):
-    return hashlib.md5((title + (date or '') + url).encode('utf-8')).hexdigest()
 
 def first_text(soup, selectors):
     for sel in selectors:
@@ -40,22 +43,20 @@ def parse_detail(url):
         html = get_html(url)
         s = BeautifulSoup(html, "html.parser")
 
-        # 표 기반(th/td) 라벨 파싱
+        # 표 기반 라벨 추출
         label_map = {}
         for row in s.select("table tr"):
-            th = row.find("th")
-            td = row.find("td")
+            th = row.find("th"); td = row.find("td")
             if th and td:
                 key = th.get_text(" ", strip=True)
                 val = td.get_text(" ", strip=True)
-                if key and val:
-                    label_map[key] = val
+                if key and val: label_map[key] = val
 
         def find_in_labels(*keys):
             for k in keys:
                 for label, val in label_map.items():
-                    if k in label:
-                        if val: return val
+                    if k in label and val:
+                        return val
             return ""
 
         summary = first_text(s, [".summary", "#summary"]) or find_in_labels("주요", "골자")
@@ -74,60 +75,73 @@ def parse_detail(url):
     except Exception:
         return {}
 
-def parse_list(url):
-    html = get_html(url)
-    soup = BeautifulSoup(html, "html.parser")
-    items = []
-
-    # 1) 테이블 행 우선 탐색
-    for tr in soup.select("table tbody tr"):
-        a = tr.select_one("a[href]")
-        if not a: continue
-        title = a.get_text(strip=True)
-        href = urljoin(url, a.get("href") or "")
-        row_text = tr.get_text(" ", strip=True)
-        date = norm_date(row_text)
-        items.append({"title": title, "url": href, "date": date})
-
-    # 2) 리스트(ul>li) 보완
-    if not items:
-        for li in soup.select("ul li"):
-            a = li.select_one("a[href]")
-            if not a: continue
-            title = a.get_text(strip=True)
-            href = urljoin(url, a.get("href") or "")
-            date = norm_date(li.get_text(" ", strip=True))
-            items.append({"title": title, "url": href, "date": date})
-
-    # 상세 진입해 보강(상위 12건)
+def parse_list_with_playwright(url):
     out = []
-    for it in items[:12]:
-        detail = parse_detail(it["url"])
-        out.append({
-            "id": make_id(it["title"], it["url"], it.get("date")),
-            "title": it["title"],
-            "summary": detail.get("summary",""),
-            "articles": detail.get("articles",[]),
-            "reason": detail.get("reason",""),
-            "effectiveDate": detail.get("effectiveDate") or it.get("date"),
-            "announcedDate": it.get("date"),
-            "lawType": detail.get("lawType"),
-            "source": {"name": "국가법령정보센터", "url": it["url"]}
-        })
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        context = browser.new_context(
+            user_agent=UA,
+            locale="ko-KR",
+            viewport={"width": 1360, "height": 900}
+        )
+        page = context.new_page()
+        page.set_extra_http_headers({"Accept-Language": "ko-KR,ko;q=0.9"})
+        page.goto(url, wait_until="networkidle", timeout=60000)
+
+        # 1) 테이블 행(우선)
+        rows = page.query_selector_all("table tbody tr")
+        for tr in rows:
+            a = tr.query_selector("a[href]")
+            if not a: continue
+            title = (a.inner_text() or "").strip()
+            href = a.get_attribute("href") or ""
+            href = urljoin(url, href)
+            row_text = (tr.inner_text() or "").strip()
+            date = norm_date(row_text)
+            if title and href:
+                out.append({"title": title, "url": href, "date": date})
+
+        # 2) ul>li 보완
+        if not out:
+            lis = page.query_selector_all("ul li")
+            for li in lis:
+                a = li.query_selector("a[href]")
+                if not a: continue
+                title = (a.inner_text() or "").strip()
+                href = urljoin(url, a.get_attribute("href") or "")
+                date = norm_date((li.inner_text() or "").strip())
+                if title and href:
+                    out.append({"title": title, "url": href, "date": date})
+
+        print(f"[INFO] list items from {url}: {len(out)}", file=sys.stderr)
+        context.close(); browser.close()
     return out
 
 def main():
     results = []
     seen = set()
     for u in TARGET_URLS:
-        for it in parse_list(u):
-            if it["id"] in seen: continue
-            seen.add(it["id"])
-            results.append(it)
-    # 최신순 정렬
+        items = parse_list_with_playwright(u)
+        for it in items[:15]:  # 상위 15건만 상세 파싱
+            if not it["title"] or not it["url"]: continue
+            _id = make_id(it["title"], it["url"], it.get("date"))
+            if _id in seen: continue
+            seen.add(_id)
+            detail = parse_detail(it["url"])
+            results.append({
+                "id": _id,
+                "title": it["title"],
+                "summary": detail.get("summary",""),
+                "articles": detail.get("articles",[]),
+                "reason": detail.get("reason",""),
+                "effectiveDate": detail.get("effectiveDate") or it.get("date"),
+                "announcedDate": it.get("date"),
+                "lawType": detail.get("lawType"),
+                "source": {"name": "국가법령정보센터", "url": it["url"]}
+            })
+
     results.sort(key=lambda x: (x.get("effectiveDate") or x.get("announcedDate") or ""), reverse=True)
     feed = {"generatedAt": int(time.time()), "items": results}
-    # GitHub Actions에서 docs/index.json으로 리다이렉트해 쓸 예정
     print(json.dumps(feed, ensure_ascii=False, indent=2))
 
 if __name__ == "__main__":
