@@ -1,4 +1,4 @@
-import json, re, time, hashlib, sys, pathlib, os  
+import json, re, time, hashlib, sys, pathlib  
 from urllib.parse import urljoin  
 import requests  
 from bs4 import BeautifulSoup  
@@ -10,4 +10,4 @@ TARGET_URLS = [
 ]  
 
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 Safari/537.36"  
-HEADERS = {"User-Agent": UA, "Accept-Language": "ko-KR,ko;q=
+HEADERS =
