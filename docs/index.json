@@ -1,5 +1,5 @@
 {
-  "generatedAt": 1754888732,
+  "generatedAt": 1754896724,
   "items": [
     {
       "id": "cbc67b57f5f0ed87602114be67dacaac",
@@ -16,7 +16,7 @@
       }
     },
     {
-      "id": "8ec3c47bf2efe0c03ed2079faaa2f329",
+      "id": "a832f2262e99d18efd90b68043d54fb4",
       "title": "회원가입",
       "summary": "",
       "articles": [],
@@ -26,11 +26,11 @@
       "lawType": null,
       "source": {
         "name": "국가법령정보센터",
-        "url": "javascript:;"
+        "url": "https://www.lawmaking.go.kr/member/lawGuide"
       }
     },
     {
-      "id": "a4417d2c3e7e52ead4a096b66cd658f7",
+      "id": "02ec20eb14b21bef01f79c87020d97b2",
       "title": "국가법령 만족도조사",
       "summary": "",
       "articles": [],
@@ -40,7 +40,7 @@
       "lawType": null,
       "source": {
         "name": "국가법령정보센터",
-        "url": "javascript:;"
+        "url": "http://poll.lawmaking.go.kr/NL/PollRpl.do?mntStmCd=190307"
       }
     },
     {
@@ -58,8 +58,8 @@
       }
     },
     {
-      "id": "fa74ec62deec9943d83f1a518d72f72f",
-      "title": "한글",
+      "id": "8a181c6b24a227f506ea168f2f720184",
+      "title": "연혁법령목록",
       "summary": "",
       "articles": [],
       "reason": "",
@@ -68,12 +68,12 @@
       "lawType": null,
       "source": {
         "name": "국가법령정보센터",
-        "url": "javascript:;"
+        "url": "https://www.law.go.kr/LSW/getLsHstXls.do"
       }
     },
     {
-      "id": "e7f11bba406c874e5fd3051d0cc935ef",
-      "title": "영문",
+      "id": "a5bfe0941c6effcbff0671a5e35ad506",
+      "title": "現行大韓法規類纂 [현행대한법규유찬]",
       "summary": "",
       "articles": [],
       "reason": "",
@@ -82,12 +82,12 @@
       "lawType": null,
       "source": {
         "name": "국가법령정보센터",
-        "url": "javascript:;"
+        "url": "http://dl.nanet.go.kr/SearchDetailView.do?cn=MONO1198018771"
       }
     },
     {
-      "id": "f9d1e539d0d843dbb55eff1f72f813f7",
-      "title": "법령(법률·대통령령·부령)",
+      "id": "c0cd19269157bc9ac61638c76c6d82e0",
+      "title": "法規類編(及)續. 冊1-2 [법규유편(급)속, 책 1-2]",
       "summary": "",
       "articles": [],
       "reason": "",
@@ -96,12 +96,12 @@
       "lawType": null,
       "source": {
         "name": "국가법령정보센터",
-        "url": "javascript:moveTopMenu('/lsSc.do?menuId=1&subMenuId=15&tabMenuId=81');"
+        "url": "http://dl.nanet.go.kr/SearchDetailView.do?cn=OLDP1000000445"
       }
     },
     {
-      "id": "83f98fc24f8544e5842b17989698b4b6",
-      "title": "자치법규(조례·규칙)",
+      "id": "7101c2503a634321bedcdc8b1c8e1823",
+      "title": "法規類編(及)續. 冊3-4 [법규유편(급)속, 책 3-4]",
       "summary": "",
       "articles": [],
       "reason": "",
@@ -110,12 +110,12 @@
       "lawType": null,
       "source": {
         "name": "국가법령정보센터",
-        "url": "javascript:moveTopMenu('/ordinSc.do?menuId=3&subMenuId=27&tabMenuId=139');"
+        "url": "http://dl.nanet.go.kr/SearchDetailView.do?cn=OLDP1201200012"
       }
     },
     {
-      "id": "833037f23f9e4dc4256757792aeebd84",
-      "title": "행정규칙(훈령·예규·고시)",
+      "id": "6ff673e8ad7fe243b1728be5d9c98877",
+      "title": "法規類編(及)續. 冊5-7 [법규유편(급)속, 책 5-7]",
       "summary": "",
       "articles": [],
       "reason": "",
@@ -124,12 +124,12 @@
       "lawType": null,
       "source": {
         "name": "국가법령정보센터",
-        "url": "javascript:moveTopMenu('/admRulSc.do?menuId=5&subMenuId=41&tabMenuId=183');"
+        "url": "http://dl.nanet.go.kr/SearchDetailView.do?cn=OLDP1201200013"
       }
     },
     {
-      "id": "f59f5931c9fa7a6d9ea7ea845e9002e8",
-      "title": "판례·해석례등(헌재결정례·행정심판재결례)",
+      "id": "1c18b6b019e9a961d75a46d1aab79bd7",
+      "title": "法規類編(及)續. 冊8-9 [법규유편(급)속, 책 8-9]",
       "summary": "",
       "articles": [],
       "reason": "",
@@ -138,12 +138,12 @@
       "lawType": null,
       "source": {
         "name": "국가법령정보센터",
-        "url": "javascript:moveTopMenu('/precSc.do?menuId=7&subMenuId=47&tabMenuId=213');"
+        "url": "http://dl.nanet.go.kr/SearchDetailView.do?cn=OLDP1201200014"
       }
     },
     {
-      "id": "07b30194bed07ea64e588c4eaa0ff17e",
-      "title": "별표·서식",
+      "id": "1147e2b421f9a36b75b30bacb7c53a99",
+      "title": "(現行)韓國法典 [(현행)한국법전]",
       "summary": "",
       "articles": [],
       "reason": "",
@@ -152,12 +152,12 @@
       "lawType": null,
       "source": {
         "name": "국가법령정보센터",
-        "url": "javascript:moveTopMenu('/lsBylSc.do?menuId=9&subMenuId=55&tabMenuId=261');"
+        "url": "http://dl.nanet.go.kr/SearchDetailView.do?cn=OLDP1196001011"
       }
     },
     {
-      "id": "2b02539d7aa8ef6a78c49286972acd3d",
-      "title": "행정·공공기관 정보(공공기관·대학교 등)",
+      "id": "6a941a419de6564f672ae65b6dc84e6c",
+      "title": "내고장알리미",
       "summary": "",
       "articles": [],
       "reason": "",
@@ -166,7 +166,7 @@
       "lawType": null,
       "source": {
         "name": "국가법령정보센터",
-        "url": "javascript:moveTopMenu('/cgmExpcSc.do?menuId=11&subMenuId=729&tabMenuId=733');"
+        "url": "https://www.laiis.go.kr"
       }
     }
   ]
