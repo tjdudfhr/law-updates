@@ -4,18 +4,19 @@ import requests
 
 RSS_FEEDS = [
     "https://www.law.go.kr/LSW/rss/rssList.do?rssSeq=1",  # 제정·개정법령
-    "https://www.law.go.kr/LSW/rss/rssList.do?rssSeq=2",  # 입법예고
+    "https://www.law.go.kr/LSW/rss/rssList.do?rssSeq=2"   # 입법예고
 ]
 
 def norm_date(s):
     if not s: return None
-    # RSS는 보통 "Fri, 10 Jan 2025 09:00:00 GMT" 형식
-    import email.utils
+    # RSS pubDate 형식 처리 (e.g., "Fri, 10 Jan 2025 09:00:00 GMT")
+    import datetime
     try:
-        t = email.utils.parsedate_to_datetime(s)
-        return t.strftime("%Y-%m-%d")
+        # 간단한 파싱
+        dt = datetime.datetime.strptime(s[:25], "%a, %d %b %Y %H:%M:%S")
+        return dt.strftime("%Y-%m-%d")
     except:
-        # 또는 YYYY.MM.DD 형식 처리
+        # 대안으로 숫자 추출
         m = re.search(r"(\d{4})[.\-/](\d{1,2})[.\-/](\d{1,2})", s)
         if m:
             y, mm, d = map(int, m.groups())
@@ -26,6 +27,7 @@ def parse_rss(url):
     items = []
     try:
         r = requests.get(url, timeout=30)
+        r.raise_for_status()
         r.encoding = 'utf-8'
         root = ET.fromstring(r.text)
         
@@ -43,7 +45,7 @@ def parse_rss(url):
                     "date": norm_date(pub_date)
                 })
     except Exception as e:
-        print(f"RSS parse error: {e}")
+        print(f"RSS parse error: {e}", file=sys.stderr)
     return items
 
 def main():
