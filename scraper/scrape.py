@@ -5,7 +5,6 @@ from bs4 import BeautifulSoup
 from playwright.sync_api import sync_playwright
 
 TARGET_URLS = [
-    # 검색어 없이 '시행 예정' 전체 목록
     "https://www.law.go.kr/LSW/lsSc.do?menuId=1&subMenuId=15&tabMenuId=81&eventGubun=060101"
 ]
 
@@ -74,23 +73,29 @@ def parse_detail(url):
     except Exception:
         return {}
 
-def write_debug(name: str, html: str):
+def write_debug(name: str, content: str | bytes):
     p = pathlib.Path("docs/_debug")
     p.mkdir(parents=True, exist_ok=True)
-    (p / name).write_text(html, encoding="utf-8")
+    if isinstance(content, bytes):
+        (p / name).write_bytes(content)
+    else:
+        (p / name).write_text(content, encoding="utf-8")
 
-def extract_items_from_frame(frame, base_url):
+def extract_items_from_frame(frame, base_url, tag="main"):
     items = []
     selectors = [
-        "table tbody tr a", "table tr a",
-        "ul li a", ".result_list a", ".tbl_list a"
+        "table tbody tr a[href]", "table tr a[href]",
+        ".tbl_list a[href]", ".result_list a[href]",
+        "ul li a[href]"
     ]
     anchors = []
     for sel in selectors:
         try:
             anchors += frame.query_selector_all(sel)
         except Exception:
-            continue
+            pass
+    print(f"[INFO] {tag}: anchors found = {len(anchors)}", file=sys.stderr)
+
     seen = set()
     for a in anchors:
         try:
@@ -107,10 +112,16 @@ def extract_items_from_frame(frame, base_url):
                 m = re.search(r"https?://[^'\"()]+", onclick or "")
                 if m: url = m.group(0)
             if not url: continue
+
+            # 너무 잡스럽게 안 모으도록 최소 필터(법령 상세로 보이는 링크 우선)
+            if "law.go.kr" not in url and "ls" not in url.lower():
+                continue
+
             key = (title, url)
             if key in seen: continue
             seen.add(key)
 
+            # 같은 행의 텍스트에서 날짜 힌트
             row_text = ""
             try:
                 row_text = a.evaluate("(el)=> (el.closest('tr') && el.closest('tr').innerText) || ''")
@@ -126,24 +137,38 @@ def parse_list_with_playwright(url):
     out = []
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
-        context = browser.new_context(user_agent=UA, locale="ko-KR",
-                                      viewport={"width": 1360, "height": 900})
+        context = browser.new_context(
+            user_agent=UA,
+            locale="ko-KR",
+            timezone_id="Asia/Seoul",
+            viewport={"width": 1360, "height": 900}
+        )
+        # 간단한 탐지 회피
+        context.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined});")
         page = context.new_page()
         page.set_extra_http_headers({"Accept-Language": "ko-KR,ko;q=0.9"})
         page.goto(url, wait_until="networkidle", timeout=60000)
+        page.wait_for_timeout(1200)  # 살짝 지연
 
-        # 디버그 저장
-        try: write_debug("main.html", page.content())
-        except Exception: pass
+        # 디버그 저장: HTML + 전체 스크린샷
+        try:
+            write_debug("main.html", page.content())
+            write_debug("page.png", page.screenshot(full_page=True))
+        except Exception:
+            pass
+
         frames = page.frames
         for i, f in enumerate(frames[:5]):
-            try: write_debug(f"frame{i}.html", f.content())
-            except Exception: pass
+            try:
+                write_debug(f"frame{i}.html", f.content())
+            except Exception:
+                pass
 
-        # 메인 + 모든 프레임에서 수집
-        out += extract_items_from_frame(page.main_frame, url)
-        for f in frames:
-            out += extract_items_from_frame(f, url)
+        # 메인 프레임
+        out += extract_items_from_frame(page.main_frame, url, tag="main")
+        # 모든 하위 프레임
+        for i, f in enumerate(frames):
+            out += extract_items_from_frame(f, url, tag=f"frame{i}")
 
         # 중복 제거
         uniq, seen = [], set()
@@ -153,7 +178,7 @@ def parse_list_with_playwright(url):
             seen.add(k); uniq.append(it)
         out = uniq
 
-        print(f"[INFO] frames: {len(frames)}; list items from {url}: {len(out)}", file=sys.stderr)
+        print(f"[INFO] frames: {len(frames)}; total items: {len(out)}", file=sys.stderr)
         context.close(); browser.close()
     return out
 
