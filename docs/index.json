@@ -1,16 +1,173 @@
 {
-"generatedAt": 0,
-"items": [
-{
-"id": "ex-1",
-"title": "개인정보 보호법 시행령 일부개정안",
-"summary": "가명정보 결합 절차 개선 및 과징금 산정 기준 명확화",
-"articles": ["제28조의2", "제64조"],
-"reason": "디지털 전환 환경에서 개인정보 활용과 보호의 균형",
-"effectiveDate": "2025-03-01",
-"announcedDate": "2024-12-01",
-"lawType": "시행령",
-"source": { "name": "국가법령정보센터", "url": "https://www.law.go.kr/" }
-}
-]
+  "generatedAt": 1754888238,
+  "items": [
+    {
+      "id": "cbc67b57f5f0ed87602114be67dacaac",
+      "title": "로그인",
+      "summary": "",
+      "articles": [],
+      "reason": "",
+      "effectiveDate": null,
+      "announcedDate": null,
+      "lawType": null,
+      "source": {
+        "name": "국가법령정보센터",
+        "url": "https://www.law.go.kr/login.do?menuId=465"
+      }
+    },
+    {
+      "id": "8ec3c47bf2efe0c03ed2079faaa2f329",
+      "title": "회원가입",
+      "summary": "",
+      "articles": [],
+      "reason": "",
+      "effectiveDate": null,
+      "announcedDate": null,
+      "lawType": null,
+      "source": {
+        "name": "국가법령정보센터",
+        "url": "javascript:;"
+      }
+    },
+    {
+      "id": "a4417d2c3e7e52ead4a096b66cd658f7",
+      "title": "국가법령 만족도조사",
+      "summary": "",
+      "articles": [],
+      "reason": "",
+      "effectiveDate": null,
+      "announcedDate": null,
+      "lawType": null,
+      "source": {
+        "name": "국가법령정보센터",
+        "url": "javascript:;"
+      }
+    },
+    {
+      "id": "a2f201ecf5c3a59ef6e7745f603d9ac2",
+      "title": "English",
+      "summary": "",
+      "articles": [],
+      "reason": "",
+      "effectiveDate": null,
+      "announcedDate": null,
+      "lawType": null,
+      "source": {
+        "name": "국가법령정보센터",
+        "url": "https://www.law.go.kr/LSW/eng/engMain.do"
+      }
+    },
+    {
+      "id": "fa74ec62deec9943d83f1a518d72f72f",
+      "title": "한글",
+      "summary": "",
+      "articles": [],
+      "reason": "",
+      "effectiveDate": null,
+      "announcedDate": null,
+      "lawType": null,
+      "source": {
+        "name": "국가법령정보센터",
+        "url": "javascript:;"
+      }
+    },
+    {
+      "id": "e7f11bba406c874e5fd3051d0cc935ef",
+      "title": "영문",
+      "summary": "",
+      "articles": [],
+      "reason": "",
+      "effectiveDate": null,
+      "announcedDate": null,
+      "lawType": null,
+      "source": {
+        "name": "국가법령정보센터",
+        "url": "javascript:;"
+      }
+    },
+    {
+      "id": "f9d1e539d0d843dbb55eff1f72f813f7",
+      "title": "법령(법률·대통령령·부령)",
+      "summary": "",
+      "articles": [],
+      "reason": "",
+      "effectiveDate": null,
+      "announcedDate": null,
+      "lawType": null,
+      "source": {
+        "name": "국가법령정보센터",
+        "url": "javascript:moveTopMenu('/lsSc.do?menuId=1&subMenuId=15&tabMenuId=81');"
+      }
+    },
+    {
+      "id": "83f98fc24f8544e5842b17989698b4b6",
+      "title": "자치법규(조례·규칙)",
+      "summary": "",
+      "articles": [],
+      "reason": "",
+      "effectiveDate": null,
+      "announcedDate": null,
+      "lawType": null,
+      "source": {
+        "name": "국가법령정보센터",
+        "url": "javascript:moveTopMenu('/ordinSc.do?menuId=3&subMenuId=27&tabMenuId=139');"
+      }
+    },
+    {
+      "id": "833037f23f9e4dc4256757792aeebd84",
+      "title": "행정규칙(훈령·예규·고시)",
+      "summary": "",
+      "articles": [],
+      "reason": "",
+      "effectiveDate": null,
+      "announcedDate": null,
+      "lawType": null,
+      "source": {
+        "name": "국가법령정보센터",
+        "url": "javascript:moveTopMenu('/admRulSc.do?menuId=5&subMenuId=41&tabMenuId=183');"
+      }
+    },
+    {
+      "id": "f59f5931c9fa7a6d9ea7ea845e9002e8",
+      "title": "판례·해석례등(헌재결정례·행정심판재결례)",
+      "summary": "",
+      "articles": [],
+      "reason": "",
+      "effectiveDate": null,
+      "announcedDate": null,
+      "lawType": null,
+      "source": {
+        "name": "국가법령정보센터",
+        "url": "javascript:moveTopMenu('/precSc.do?menuId=7&subMenuId=47&tabMenuId=213');"
+      }
+    },
+    {
+      "id": "07b30194bed07ea64e588c4eaa0ff17e",
+      "title": "별표·서식",
+      "summary": "",
+      "articles": [],
+      "reason": "",
+      "effectiveDate": null,
+      "announcedDate": null,
+      "lawType": null,
+      "source": {
+        "name": "국가법령정보센터",
+        "url": "javascript:moveTopMenu('/lsBylSc.do?menuId=9&subMenuId=55&tabMenuId=261');"
+      }
+    },
+    {
+      "id": "2b02539d7aa8ef6a78c49286972acd3d",
+      "title": "행정·공공기관 정보(공공기관·대학교 등)",
+      "summary": "",
+      "articles": [],
+      "reason": "",
+      "effectiveDate": null,
+      "announcedDate": null,
+      "lawType": null,
+      "source": {
+        "name": "국가법령정보센터",
+        "url": "javascript:moveTopMenu('/cgmExpcSc.do?menuId=11&subMenuId=729&tabMenuId=733');"
+      }
+    }
+  ]
 }
