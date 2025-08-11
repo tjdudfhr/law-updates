@@ -1,0 +1,33 @@
+<!doctype html> <html lang="ko"> <head> <meta charset="utf-8"> <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"> <title>법령 변경 한눈에</title> <style> :root { color-scheme: light dark; } body { margin:0; font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif; background:#0b0b12; color:#fff; } .hero { position:relative; padding:28px 16px 24px; background: linear-gradient(120deg,#5b5bd6,#9b59b6); overflow:hidden; } .hero h1 { margin: 14px 0 6px; font-size: 28px; } .hero p { margin:0; opacity: .9; } .shape { position:absolute; border-radius:50%; filter: blur(30px); mix-blend-mode: screen; opacity:.35; } .s1 { width:220px; height:220px; left:6%; top:20%; background:#fff; animation: float1 16s linear infinite; } .s2 { width:260px; height:260px; right:4%; top:10%; background:#fff; opacity:.25; animation: float2 20s linear infinite; } @keyframes float1 { from { transform: translate(0,0) scale(1);} to { transform: translate(20px, -10px) scale(1.05);} } @keyframes float2 { from { transform: translate(0,0) scale(1);} to { transform: translate(-20px, 10px) scale(0.95);} } .container { padding: 14px 12px 40px; max-width: 900px; margin: 0 auto; } .controls { display:flex; gap:8px; margin: 12px 0 8px; } input[type="search"] { flex:1; padding:10px 12px; border-radius: 10px; border: none; outline: none; background:#1a1a25; color:#fff; } button.refresh { padding:10px 12px; border-radius:10px; border:1px solid #3a3a55; background:#161621; color:#fff; cursor:pointer; } .card { background:#12121a; border:1px solid #24243a; border-radius:14px; padding:14px; margin:10px 0; } .title { font-weight:700; margin-bottom:6px; } .meta { font-size:12px; opacity:.8; display:flex; gap:10px; flex-wrap: wrap; } .tag { display:inline-block; font-size:12px; padding:4px 8px; background:#23233a; border-radius:999px; margin-right:6px; } details { margin-top:10px; } a { color:#9dbbff; text-decoration: none; } .empty { opacity:.7; padding: 24px 8px; } </style> </head> <body> <div class="hero"> <div class="shape s1"></div> <div class="shape s2"></div> <h1>개정 예정 법규</h1> <p>제목·주요 내용·조항·사유·시행일자를 한 번에</p> </div> <div class="container"> <div class="controls"> <input id="q" type="search" placeholder="검색(제목/요약)"> <button class="refresh" onclick="load()">새로고침</button> </div> <div id="list"></div> </div> <script> const listEl = document.getElementById('list'); const qEl = document.getElementById('q'); let items = []; qEl.addEventListener('input', render);
+async function load() {
+listEl.innerHTML = '불러오는 중…';
+try {
+const res = await fetch('index.json?_=' + Date.now());
+const data = await res.json();
+items = (data.items || []);
+render();
+} catch (e) {
+listEl.innerHTML = '오류: ' + e.message;
+}
+}
+
+function render() {
+const q = qEl.value.trim().toLowerCase();
+const filtered = q ? items.filter(x =>
+(x.title||'').toLowerCase().includes(q) || (x.summary||'').toLowerCase().includes(q)
+) : items;
+if (!filtered.length) {
+listEl.innerHTML = '<div class="empty">표시할 항목이 없습니다.</div>';
+return;
+}
+listEl.innerHTML = filtered.map(x => card(x)).join('');
+}
+
+function card(x) {
+const tags = []
+if (x.lawType) tags.push(<span class="tag">${x.lawType}</span>);
+if (x.effectiveDate) tags.push(<span class="tag">시행 ${x.effectiveDate}</span>);
+if (x.announcedDate) tags.push(<span class="tag">공포/예고 ${x.announcedDate}</span>);
+return `
+
+<div class="card"> <div class="title">${escapeHtml(x.title||'(제목 없음)')}</div> <div class="meta"> ${tags.join('')} <span>${escapeHtml(x.source?.name || '')}</span> </div> ${x.summary ? `<div style="margin-top:8px; opacity:.9">${escapeHtml(x.summary)}</div>` : ''} <details> <summary>자세히</summary> ${x.articles?.length ? `<div style="margin-top:8px"><b>개정조항</b><ul>${x.articles.map(a=>`<li>${escapeHtml(a)}</li>`).join('')}</ul></div>`:''} ${x.reason ? `<div style="margin-top:8px"><b>개정사유</b><div>${escapeHtml(x.reason)}</div></div>`:''} <div style="margin-top:8px"> <a href="${x.source?.url}" target="_blank" rel="noopener">출처 열기</a> </div> </details> </div>`; } function escapeHtml(s){return (s||'').replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]))} load(); </script> </body> </html>
