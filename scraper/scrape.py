@@ -4,7 +4,7 @@ from urllib.parse import urljoin
 
 # 제공해주신 목록 URL(필요시 여기 배열에 다른 목록 URL을 추가할 수 있어요)
 TARGET_URLS = [
-    "https://www.law.go.kr/LSW/lsSc.do?section=&menuId=1&subMenuId=15&tabMenuId=81&eventGubun=060101&query=%ED%95%98%EB%8F%84%EA%B8%89%EB%B2%95"
+    "https://www.law.go.kr/LSW/lsSc.do?menuId=1&subMenuId=15&tabMenuId=81&eventGubun=060101"
 ]
 
 HEADERS = {"User-Agent": "LawUpdatesBot/1.0 (+contact@example.com)"}
