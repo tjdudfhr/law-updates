@@ -1,5 +1,5 @@
 {
-  "generatedAt": 1754897148,
+  "generatedAt": 1754897766,
   "items": [
     {
       "id": "cbc67b57f5f0ed87602114be67dacaac",
@@ -13,34 +13,6 @@
       "source": {
         "name": "국가법령정보센터",
         "url": "https://www.law.go.kr/login.do?menuId=465"
-      }
-    },
-    {
-      "id": "a832f2262e99d18efd90b68043d54fb4",
-      "title": "회원가입",
-      "summary": "",
-      "articles": [],
-      "reason": "",
-      "effectiveDate": null,
-      "announcedDate": null,
-      "lawType": null,
-      "source": {
-        "name": "국가법령정보센터",
-        "url": "https://www.lawmaking.go.kr/member/lawGuide"
-      }
-    },
-    {
-      "id": "02ec20eb14b21bef01f79c87020d97b2",
-      "title": "국가법령 만족도조사",
-      "summary": "",
-      "articles": [],
-      "reason": "",
-      "effectiveDate": null,
-      "announcedDate": null,
-      "lawType": null,
-      "source": {
-        "name": "국가법령정보센터",
-        "url": "http://poll.lawmaking.go.kr/NL/PollRpl.do?mntStmCd=190307"
       }
     },
     {
@@ -69,104 +41,6 @@
       "source": {
         "name": "국가법령정보센터",
         "url": "https://www.law.go.kr/LSW/getLsHstXls.do"
-      }
-    },
-    {
-      "id": "a5bfe0941c6effcbff0671a5e35ad506",
-      "title": "現行大韓法規類纂 [현행대한법규유찬]",
-      "summary": "",
-      "articles": [],
-      "reason": "",
-      "effectiveDate": null,
-      "announcedDate": null,
-      "lawType": null,
-      "source": {
-        "name": "국가법령정보센터",
-        "url": "http://dl.nanet.go.kr/SearchDetailView.do?cn=MONO1198018771"
-      }
-    },
-    {
-      "id": "c0cd19269157bc9ac61638c76c6d82e0",
-      "title": "法規類編(及)續. 冊1-2 [법규유편(급)속, 책 1-2]",
-      "summary": "",
-      "articles": [],
-      "reason": "",
-      "effectiveDate": null,
-      "announcedDate": null,
-      "lawType": null,
-      "source": {
-        "name": "국가법령정보센터",
-        "url": "http://dl.nanet.go.kr/SearchDetailView.do?cn=OLDP1000000445"
-      }
-    },
-    {
-      "id": "7101c2503a634321bedcdc8b1c8e1823",
-      "title": "法規類編(及)續. 冊3-4 [법규유편(급)속, 책 3-4]",
-      "summary": "",
-      "articles": [],
-      "reason": "",
-      "effectiveDate": null,
-      "announcedDate": null,
-      "lawType": null,
-      "source": {
-        "name": "국가법령정보센터",
-        "url": "http://dl.nanet.go.kr/SearchDetailView.do?cn=OLDP1201200012"
-      }
-    },
-    {
-      "id": "6ff673e8ad7fe243b1728be5d9c98877",
-      "title": "法規類編(及)續. 冊5-7 [법규유편(급)속, 책 5-7]",
-      "summary": "",
-      "articles": [],
-      "reason": "",
-      "effectiveDate": null,
-      "announcedDate": null,
-      "lawType": null,
-      "source": {
-        "name": "국가법령정보센터",
-        "url": "http://dl.nanet.go.kr/SearchDetailView.do?cn=OLDP1201200013"
-      }
-    },
-    {
-      "id": "1c18b6b019e9a961d75a46d1aab79bd7",
-      "title": "法規類編(及)續. 冊8-9 [법규유편(급)속, 책 8-9]",
-      "summary": "",
-      "articles": [],
-      "reason": "",
-      "effectiveDate": null,
-      "announcedDate": null,
-      "lawType": null,
-      "source": {
-        "name": "국가법령정보센터",
-        "url": "http://dl.nanet.go.kr/SearchDetailView.do?cn=OLDP1201200014"
-      }
-    },
-    {
-      "id": "1147e2b421f9a36b75b30bacb7c53a99",
-      "title": "(現行)韓國法典 [(현행)한국법전]",
-      "summary": "",
-      "articles": [],
-      "reason": "",
-      "effectiveDate": null,
-      "announcedDate": null,
-      "lawType": null,
-      "source": {
-        "name": "국가법령정보센터",
-        "url": "http://dl.nanet.go.kr/SearchDetailView.do?cn=OLDP1196001011"
-      }
-    },
-    {
-      "id": "6a941a419de6564f672ae65b6dc84e6c",
-      "title": "내고장알리미",
-      "summary": "",
-      "articles": [],
-      "reason": "",
-      "effectiveDate": null,
-      "announcedDate": null,
-      "lawType": null,
-      "source": {
-        "name": "국가법령정보센터",
-        "url": "https://www.laiis.go.kr"
       }
     }
   ]
