@@ -1,47 +1,4 @@
 {
-  "generatedAt": 1754897766,
-  "items": [
-    {
-      "id": "cbc67b57f5f0ed87602114be67dacaac",
-      "title": "로그인",
-      "summary": "",
-      "articles": [],
-      "reason": "",
-      "effectiveDate": null,
-      "announcedDate": null,
-      "lawType": null,
-      "source": {
-        "name": "국가법령정보센터",
-        "url": "https://www.law.go.kr/login.do?menuId=465"
-      }
-    },
-    {
-      "id": "a2f201ecf5c3a59ef6e7745f603d9ac2",
-      "title": "English",
-      "summary": "",
-      "articles": [],
-      "reason": "",
-      "effectiveDate": null,
-      "announcedDate": null,
-      "lawType": null,
-      "source": {
-        "name": "국가법령정보센터",
-        "url": "https://www.law.go.kr/LSW/eng/engMain.do"
-      }
-    },
-    {
-      "id": "8a181c6b24a227f506ea168f2f720184",
-      "title": "연혁법령목록",
-      "summary": "",
-      "articles": [],
-      "reason": "",
-      "effectiveDate": null,
-      "announcedDate": null,
-      "lawType": null,
-      "source": {
-        "name": "국가법령정보센터",
-        "url": "https://www.law.go.kr/LSW/getLsHstXls.do"
-      }
-    }
-  ]
+  "generatedAt": 1754898199,
+  "items": []
 }
