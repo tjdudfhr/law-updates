@@ -1,30 +1,41 @@
 name: Scrape laws
+
 on:
-  schedule:
-    - cron: "0 * * * *"   # 매시 정각
   workflow_dispatch:
+  schedule:
+    - cron: '0 */4 * * *'  # 4시간마다
+
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
-      - run: pip install requests beautifulsoup4 playwright
-      - run: python -m playwright install --with-deps chromium
+          python-version: '3.11'
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install -r scraper/requirements.txt
+
       - name: Run scraper
         run: python scraper/scrape.py > docs/index.json
-      - name: Show summary
-        run: |
-          echo "Top of docs/index.json:"
-          head -n 40 docs/index.json || true
+
+      - name: Debug artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: debug
+          path: docs/_debug
+
       - name: Commit & push
         run: |
           git config user.name "bot"
-          git config user.email "bot@users.noreply.github.com"
+          git config user.email "actions@github.com"
           git add docs/index.json docs/_debug || true
-          git commit -m "update feed + debug" || echo "no changes"
-          git push
+          git pull --rebase origin main  # 여기가 추가: 푸시 전에 pull 해서 동기화
+          git commit -m "update feed + debug" || true  # 변경 없으면 스킵
+          git push origin main
