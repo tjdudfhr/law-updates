@@ -16,10 +16,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: pip
+          # cache 옵션 제거: requirements.txt 찾지 않음
 
       - name: Install dependencies
-        run: pip install -r scraper/requirements.txt
+        run: |
+          pip install requests lxml beautifulsoup4 playwright  # 필요한 라이브러리 직접 설치 (RSS 버전 기준)
+          playwright install --with-deps  # Playwright 필요 시
 
       - name: Run scraper
         run: python scraper/scrape.py > docs/index.json
@@ -36,6 +38,6 @@ jobs:
           git config user.name "bot"
           git config user.email "actions@github.com"
           git add docs/index.json docs/_debug || true
-          git pull --rebase origin main  # 여기가 추가: 푸시 전에 pull 해서 동기화
-          git commit -m "update feed + debug" || true  # 변경 없으면 스킵
+          git pull --rebase origin main  # 동기화
+          git commit -m "update feed + debug" || true
           git push origin main
