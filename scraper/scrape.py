@@ -1,10 +1,10 @@
-import json, time, hashlib, re
+import json, time, hashlib, re, sys
 import xml.etree.ElementTree as ET
 import requests
 
 RSS_FEEDS = [
-    "https://www.law.go.kr/LSW/rss/rssList.do?rssSeq=1",  # 제정·개정법령
-    "https://www.law.go.kr/LSW/rss/rssList.do?rssSeq=2"   # 입법예고
+    "https://opinion.lawmaking.go.kr/rss/announce.rss",  # 입법예고 RSS (실제 데이터 많음)
+    "https://www.law.go.kr/rss/lsRss.do?section=LS"      # 제정·개정법령 RSS (법제처 공식)
 ]
 
 def norm_date(s):
@@ -12,15 +12,20 @@ def norm_date(s):
     # RSS pubDate 형식 처리 (e.g., "Fri, 10 Jan 2025 09:00:00 GMT")
     import datetime
     try:
-        # 간단한 파싱
-        dt = datetime.datetime.strptime(s[:25], "%a, %d %b %Y %H:%M:%S")
+        # 간단한 파싱 (RFC 822 형식 지원)
+        dt = datetime.datetime.strptime(s.split('+')[0].strip(), "%a, %d %b %Y %H:%M:%S")
         return dt.strftime("%Y-%m-%d")
-    except:
-        # 대안으로 숫자 추출
-        m = re.search(r"(\d{4})[.\-/](\d{1,2})[.\-/](\d{1,2})", s)
-        if m:
-            y, mm, d = map(int, m.groups())
-            return f"{y:04d}-{mm:02d}-{d:02d}"
+    except ValueError:
+        try:
+            # 다른 형식 (e.g., "2025-08-12T12:00:00")
+            dt = datetime.datetime.fromisoformat(s.split('.')[0].replace('Z', ''))
+            return dt.strftime("%Y-%m-%d")
+        except:
+            # 숫자 추출 대안
+            m = re.search(r"(\d{4})[.\-/](\d{1,2})[.\-/](\d{1,2})", s)
+            if m:
+                y, mm, d = map(int, m.groups())
+                return f"{y:04d}-{mm:02d}-{d:02d}"
     return None
 
 def parse_rss(url):
@@ -45,13 +50,15 @@ def parse_rss(url):
                     "date": norm_date(pub_date)
                 })
     except Exception as e:
-        print(f"RSS parse error: {e}", file=sys.stderr)
+        print(f"RSS parse error for {url}: {e}", file=sys.stderr)
     return items
 
 def main():
     all_items = []
     for feed_url in RSS_FEEDS:
-        all_items.extend(parse_rss(feed_url))
+        parsed = parse_rss(feed_url)
+        all_items.extend(parsed)
+        print(f"[INFO] Parsed {len(parsed)} items from {feed_url}", file=sys.stderr)
     
     # 중복 제거 및 JSON 변환
     results = []
