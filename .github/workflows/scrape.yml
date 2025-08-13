@@ -3,11 +3,17 @@ name: Scrape laws
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */4 * * *'  # 4시간마다
+    - cron: '0 */6 * * *'  # 6시간마다
+
+permissions:
+  contents: write
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
+    concurrency:
+      group: scrape-law-updates
+      cancel-in-progress: true
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -16,28 +22,20 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          # cache 옵션 제거: requirements.txt 찾지 않음
-
-      - name: Install dependencies
-        run: |
-          pip install requests lxml beautifulsoup4 playwright  # 필요한 라이브러리 직접 설치 (RSS 버전 기준)
-          playwright install --with-deps  # Playwright 필요 시
 
       - name: Run scraper
-        run: python scraper/scrape.py > docs/index.json
-
-      - name: Debug artifact
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: debug
-          path: docs/_debug
+        run: |
+          mkdir -p docs/_debug
+          python scraper/scrape.py > docs/index.json
+          echo "wrote docs/index.json"
+          wc -c docs/index.json || true
+          head -n 5 docs/index.json || true
 
       - name: Commit & push
         run: |
           git config user.name "bot"
           git config user.email "actions@github.com"
           git add docs/index.json docs/_debug || true
-          git pull --rebase origin main  # 동기화
-          git commit -m "update feed + debug" || true
+          git pull --rebase origin main || true
+          git diff --staged --quiet || git commit -m "update feed + debug"
           git push origin main
