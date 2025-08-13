@@ -35,13 +35,11 @@ def read_local(path):
     return None
 
 def load_xml(url, debug_name):
-    # 1순위: curl이 저장해 둔 파일 사용 → 네트워크 막혀도 파싱 가능
     local_path = f"docs/_debug/{debug_name}.xml"
     xml = read_local(local_path)
     if xml:
         print(f"[INFO] use local {local_path}", file=sys.stderr)
         return xml
-    # 2순위: 파이썬으로 직접 다운로드(성공 시 디버그로 저장)
     try:
         xml = fetch(url)
         os.makedirs("docs/_debug", exist_ok=True)
@@ -136,7 +134,6 @@ def main():
     law = map_law(law_raw)
     alt = map_alt(alt_raw)
 
-    # 우선순위로 집계
     primary = []
     for x in law:
         if x["lawType"]!="개정" or not x["effectiveDate"]: continue
@@ -144,13 +141,13 @@ def main():
             d=datetime.strptime(x["effectiveDate"], "%Y-%m-%d").date()
             if TODAY<=d<=FUTURE_LIMIT: primary.append(x)
         except: pass
+
     secondary = [x for x in law if x["lawType"]=="개정" and x["effectiveDate"]]
     tertiary  = law[:20]
     fallback  = alt[:20]
 
     picked = primary or secondary or tertiary or fallback
 
-    # 결과 구성
     results, seen = [], set()
     for it in picked[:30]:
         key = (it["title"] or "") + (it["url"] or "")
@@ -163,7 +160,6 @@ def main():
             "lawType": it.get("lawType") or "", "source": it.get("source") or {"name":"","url":it.get("url")}
         })
 
-    # 정렬
     def sort_key(x):
         return (1, x.get("effectiveDate") or "") if x.get("effectiveDate") else (2, x.get("title") or "")
     results.sort(key=sort_key, reverse=True)
