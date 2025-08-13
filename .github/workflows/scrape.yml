@@ -19,6 +19,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install deps
+        run: pip install feedparser
+
       - name: Prepare debug dir
         run: mkdir -p docs/_debug
 
