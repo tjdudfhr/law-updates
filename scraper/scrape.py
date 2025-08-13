@@ -3,7 +3,10 @@ import urllib.request
 import xml.etree.ElementTree as ET
 from datetime import datetime, date, timedelta
 
-UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) law-updates-bot/1.4"
+# 관대한 RSS 파서
+import feedparser
+
+UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) law-updates-bot/1.5"
 LAW_RSS = "https://www.law.go.kr/rss/lsRss.do?section=LS"
 ALT_RSS = "https://opinion.lawmaking.go.kr/rss/announce.rss"
 
@@ -55,6 +58,8 @@ def parse_rss(url, debug_name):
     items = []
     if not xml:
         return items
+
+    # 1) 표준 XML 파싱 시도
     try:
         root = ET.fromstring(xml)
         for it in root.findall(".//item"):
@@ -64,9 +69,47 @@ def parse_rss(url, debug_name):
             pub = (it.findtext("pubDate") or "").strip()
             if title and link:
                 items.append({"title": title, "url": link, "summary": desc, "pubDate": pub})
-        print(f"[INFO] parsed {debug_name}: {len(items)} items", file=sys.stderr)
+        if items:
+            print(f"[INFO] parsed {debug_name} via XML: {len(items)} items", file=sys.stderr)
+            return items
+        else:
+            print(f"[WARN] XML parsed but 0 items for {debug_name}", file=sys.stderr)
     except Exception as e:
-        print(f"[ERR] XML parse failed for {debug_name}: {e}", file=sys.stderr)
+        print(f"[WARN] XML parse failed for {debug_name}: {e}", file=sys.stderr)
+
+    # 2) feedparser(느슨한 파서)로 재시도
+    try:
+        fp = feedparser.parse(xml)
+        for e in fp.entries:
+            title = (getattr(e, "title", "") or "").strip()
+            link = (getattr(e, "link", "") or "").strip()
+            desc = (getattr(e, "summary", "") or getattr(e, "description", "") or "").strip()
+            pub = (getattr(e, "published", "") or getattr(e, "updated", "") or "").strip()
+            if title and link:
+                items.append({"title": title, "url": link, "summary": desc, "pubDate": pub})
+        if items:
+            print(f"[INFO] parsed {debug_name} via feedparser: {len(items)} items", file=sys.stderr)
+            return items
+    except Exception as e:
+        print(f"[WARN] feedparser failed for {debug_name}: {e}", file=sys.stderr)
+
+    # 3) 최후: 정규식으로 item 블록 추출
+    try:
+        blocks = re.findall(r"<item\b[^>]*>(.*?)</item>", xml, flags=re.I|re.S)
+        for blk in blocks:
+            def pick(tag):
+                m = re.search(rf"<{tag}[^>]*>(.*?)</{tag}>", blk, flags=re.I|re.S)
+                return re.sub(r"<[^>]+>", "", m.group(1)).strip() if m else ""
+            title = pick("title")
+            link = pick("link")
+            desc = pick("description")
+            pub = pick("pubDate")
+            if title and link:
+                items.append({"title": title, "url": link, "summary": desc, "pubDate": pub})
+        print(f"[INFO] parsed {debug_name} via regex: {len(items)} items", file=sys.stderr)
+    except Exception as e:
+        print(f"[ERR] regex parse failed for {debug_name}: {e}", file=sys.stderr)
+
     return items
 
 def is_amendment(title, desc):
@@ -160,6 +203,7 @@ def main():
             "lawType": it.get("lawType") or "", "source": it.get("source") or {"name":"","url":it.get("url")}
         })
 
+    # 정렬
     def sort_key(x):
         return (1, x.get("effectiveDate") or "") if x.get("effectiveDate") else (2, x.get("title") or "")
     results.sort(key=sort_key, reverse=True)
