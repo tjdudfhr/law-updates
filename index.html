@@ -1,0 +1,30 @@
+<div class="controls">
+  <input id="q" type="text" placeholder="법령명 검색 (예: 자동차관리법, 시행령 등)" />
+  <select id="ministry">
+    <option value="">소관부처: 전체</option>
+  </select>
+  <select id="lawType">
+    <option value="">법령종류: 전체</option>
+  </select>
+  <div class="check">
+    <input id="onlyThisYear" type="checkbox" checked />
+    <label for="onlyThisYear">올해만</label>
+  </div>
+  <div class="right">
+    <select id="sort">
+      <option value="dateAsc">시행일 빠른순</option>
+      <option value="dateDesc">시행일 늦은순</option>
+      <option value="titleAsc">법령명 가나다순</option>
+    </select>
+    <button id="reset">리셋</button>
+  </div>
+</div>
+
+<div class="meta">
+  <div id="count" class="badge">0건</div>
+  <div id="hint" class="muted"></div>
+</div>
+
+<div id="list" class="list"></div>
+
+<footer>© LawWatch · UI 프리뷰. 데이터 출처: 국가법령정보(연결 예정)</footer>
