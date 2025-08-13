@@ -3,7 +3,7 @@ name: Scrape laws
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'  # 6시간마다
+    - cron: "0 */6 * * *" # 6시간마다
 
 permissions:
   contents: write
@@ -11,31 +11,45 @@ permissions:
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    concurrency:
-      group: scrape-law-updates
-      cancel-in-progress: true
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
+
+      - name: Prepare debug dir
+        run: mkdir -p docs/_debug
+
+      - name: Network test and fetch RSS via curl
+        run: |
+          set -e
+          L1="https://www.law.go.kr/rss/lsRss.do?section=LS"
+          L2="https://opinion.lawmaking.go.kr/rss/announce.rss"
+          echo "curl $(date -u)" > docs/_debug/net.txt
+          echo "LAW_RSS: $L1" >> docs/_debug/net.txt
+          echo "ANN_RSS: $L2" >> docs/_debug/net.txt
+          curl -L -s -S -w "\nHTTP:%{http_code}\n" -D docs/_debug/law_headers.txt -o docs/_debug/law_rss.xml "$L1" >> docs/_debug/net.txt || true
+          curl -L -s -S -w "\nHTTP:%{http_code}\n" -D docs/_debug/announce_headers.txt -o docs/_debug/announce_rss.xml "$L2" >> docs/_debug/net.txt || true
+          echo "--- headers (law) ---" >> docs/_debug/net.txt
+          tail -n +1 docs/_debug/law_headers.txt >> docs/_debug/net.txt || true
+          echo "--- headers (announce) ---" >> docs/_debug/net.txt
+          tail -n +1 docs/_debug/announce_headers.txt >> docs/_debug/net.txt || true
+          wc -c docs/_debug/*.xml >> docs/_debug/net.txt || true
 
       - name: Run scraper
         run: |
-          mkdir -p docs/_debug
           python scraper/scrape.py > docs/index.json
-          echo "wrote docs/index.json"
-          wc -c docs/index.json || true
-          head -n 5 docs/index.json || true
+          python - << 'PY'
+import json; d=json.load(open("docs/index.json",encoding="utf-8"))
+print("items =", len(d.get("items",[])))
+PY
 
-      - name: Commit & push
-        run: |
-          git config user.name "bot"
-          git config user.email "actions@github.com"
-          git add docs/index.json docs/_debug || true
-          git pull --rebase origin main || true
-          git diff --staged --quiet || git commit -m "update feed + debug"
-          git push origin main
+      - name: Commit and push
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: update index.json (+debug)"
+          file_pattern: |
+            docs/index.json
+            docs/_debug/*
