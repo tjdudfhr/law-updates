@@ -41,10 +41,15 @@ jobs:
       - name: Run scraper
         run: |
           python scraper/scrape.py > docs/index.json
-          python - << 'PY'
-import json; d=json.load(open("docs/index.json",encoding="utf-8"))
-print("items =", len(d.get("items",[])))
-PY
+          python -c "import json; d=json.load(open('docs/index.json', encoding='utf-8')); print('items =', len(d.get('items', [])))"
+
+      - name: Upload generated files
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-files
+          path: |
+            docs/index.json
+            docs/_debug/*
 
       - name: Commit and push
         uses: stefanzweifel/git-auto-commit-action@v5
