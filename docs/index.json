@@ -1,4 +1,29 @@
 {
-  "generatedAt": 1754963003,
-  "items": []
+  "generatedAt": 1755059331,
+  "items": [
+    {
+      "id": "sample1",
+      "title": "샘플: 개인정보 보호법 시행령 일부개정령",
+      "summary": "화면 확인용 샘플 데이터입니다.",
+      "effectiveDate": "2025-02-01",
+      "announcedDate": "2025-01-10",
+      "lawType": "대통령령",
+      "source": {
+        "name": "샘플",
+        "url": "https://www.law.go.kr"
+      }
+    },
+    {
+      "id": "sample2",
+      "title": "샘플: 전자상거래 등에서의 소비자보호에 관한 법률 시행규칙",
+      "summary": "화면 확인용 샘플 데이터입니다.",
+      "effectiveDate": "2025-03-01",
+      "announcedDate": "2025-01-08",
+      "lawType": "부령",
+      "source": {
+        "name": "샘플",
+        "url": "https://www.law.go.kr"
+      }
+    }
+  ]
 }
